@@ -244,20 +244,21 @@ std::string getCurrentDateTimeString() {
 // ===================================================================
 int main(int argc, char** argv) {
 
-  // CLI::App app{"PreVABS, a parametric pre-/post-processor for 2D cross-sections for VABS/SwiftComp"};
-  // addParserArguments(app);
+  // New CLI
+  // try{
+  //   CLI::App app{"PreVABS, a parametric pre-/post-processor for 2D cross-sections for VABS/SwiftComp"};
+  //   addParserArguments(app);
+  //   app.parse(argc, argv);
+  //   processConfigVariables();
+  // }
 
+  // Old CLI, will be deprecated
   try {
-    // app.parse(argc, argv);
-
-    // Old CLI, will be deprecated
     if (argc < 2) {
       printCliHelp();
       return 0;
     }
-
     parseArguments(argc, argv);
-
     processConfigVariables();
   }
 
