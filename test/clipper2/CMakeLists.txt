@@ -17,6 +17,7 @@ set(exp_src
 
 add_executable(test ${exp_src})
 
+message( STATUS "ENV{Clipper2_ROOT} = " $ENV{Clipper2_ROOT}/include )
 target_include_directories(test PRIVATE $ENV{Clipper2_ROOT}/include)
 
 find_library(CLIPPER2_LIB clipper2 PATHS $ENV{Clipper2_ROOT}/lib REQUIRED)

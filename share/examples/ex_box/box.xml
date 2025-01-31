@@ -11,6 +11,8 @@
 
 <cross_section name="box" format="1">
 
+  <include></include>
+
   <analysis>
     <!-- Timoshenko beam model -->
     <model>1</model>
