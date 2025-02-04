@@ -16,23 +16,25 @@ int main(int argc, char* argv[])
 {
 
   DoSimpleShapes();
-  DoRabbit();
+  // DoRabbit();
   //std::getchar();
 }
 
 void DoSimpleShapes() 
 {
-  Paths64 op1, op2;
+  PathsD op1, op2;
+  Paths64 op1_64, op2_64;
   FillRule fr2 = FillRule::EvenOdd;
   SvgWriter svg2;
 
-  op1.push_back(MakePath({ 80,60, 20,20, 180,20, 180,70, 25,150, 20,180, 180,180 }));
+  op1.push_back(MakePathD({ 80.0,60.0, 20.0,20.0, 180.0,20.0, 180.0,70.0, 25.0,150.0, 20.0,180.0, 180.0,180.0 }));
   op2 = InflatePaths(op1, 15, JoinType::Miter, EndType::Square, 3);
   SvgAddOpenSubject(svg2, op1, fr2, false);
-  SvgAddSolution(svg2, TransformPaths<double, int64_t>(op2), fr2, false);
+  SvgAddSolution(svg2, op2, fr2, false);
   SvgAddCaption(svg2, "Miter Joins; Square Ends", 20, 210);
 
-  op1 = TranslatePaths<int64_t>(op1, 210, 0);
+  // op1 = TranslatePaths<int64_t>(op1, 210, 0);
+  op1_64 = TranslatePaths<int64_t>(TransformPaths<int64_t, double>(op1), 210, 0);
   op2 = InflatePaths(op1, 15, JoinType::Square, EndType::Square);
   SvgAddOpenSubject(svg2, op1, fr2, false);
   SvgAddSolution(svg2, TransformPaths<double, int64_t>(op2), fr2, false);
