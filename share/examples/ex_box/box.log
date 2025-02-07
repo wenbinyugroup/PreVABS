@@ -1,48 +1,49 @@
-
-========================================2025-01-25 15:43:39 [info] - reading input files
-2025-01-25 15:43:39 [info]     - reading main input file:
-
+[info] - prevabs start (2025-02-06 18:26:02)
+[info] - reading input files
+[info]     - reading main input file: .\share\examples\ex_box\box.xml
+[e  
   
-
-
-
-
-
-
-
-
-========================================
-
-
-========================================
-
-01-25 15:43:39 [info] - reading input files -- done
-2025-01-25 15:43:39 [info] - building the shape
-2025-01-25 15:43:39 [info]   - building the cross section, step 1
-2025-01-25 15:43:39 [info]     - building component: main
-2025-01-25 15:43:39 [info]   - building the cross section, step 2
-2025-01-25 15:43:39 [info]     - building component details: main
-2025-01-25 15:43:39 [info]   - fixing geometry
-2025-01-25 15:43:39 [info] - building the shape -- done
-2025-01-25 15:43:39 [info] - modeling in Gmsh
-2025-01-25 15:43:39 [info]   - creating gmsh vertices
-2025-01-25 15:43:39 [info]   - creating gmsh edges
-2025-01-25 15:43:39 [info]   - creating gmsh faces
-2025-01-25 15:43:39 [info]   - creating physical groups
-2025-01-25 15:43:39 [info]   - meshing
-2025-01-25 15:43:39 [info] - modeling in Gmsh -- done
-2025-01-25 15:43:39 [info] - writing outputs
-2025-01-25 15:43:39 [info]   - writing gmsh .opt file: box.opt
-2025-01-25 15:43:39 [info]   - writing gmsh .geo file: box.geo_unrolled
-2025-01-25 15:43:39 [info]   - writing gmsh .msh file: box.msh
-2025-01-25 15:43:39 [info]   - writing sg file: box.sg
-2025-01-25 15:43:39 [info]     - writing nodes
-2025-01-25 15:43:39 [info]     - writing elements
-2025-01-25 15:43:39 [info]       -   writing connectivity
-2025-01-25 15:43:39 [info]       -   writing local orientation
-2025-01-25 15:43:39 [info]   - writing material id-name file: box.sg.mat
-2025-01-25 15:43:39 [info] - writing outputs -- done
-2025-01-25 15:43:39 [info] - running Gmsh for visualization
-2025-01-25 15:43:39 [info] - running: gmsh box.geo_unrolled box.msh box.opt
-2025-01-25 15:43:39 [info] prevabs finished
-2025-01-25 15:43:39 [info] total running time: 0.07 sec
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  ========================================
+  
+  
+  ========================================
+  
+fo]   - building the shape
+[info]     - building the cross section, step 1
+[info]       - building component: main
+[info]     - building the cross section, step 2
+[info]       - building component details: main
+[info]     - fixing geometry
+[info]   - building the shape -- done
+[info]   - modeling in Gmsh
+[info]     - creating gmsh vertices
+[info]     - creating gmsh edges
+[info]     - creating gmsh faces
+[info]     - creating physical groups
+[info]     - meshing
+[info]   - modeling in Gmsh -- done
+[info]   - writing outputs
+[info]     - writing gmsh .opt file: .\share\examples\ex_box\box.opt
+[info]     - writing gmsh .geo file: .\share\examples\ex_box\box.geo_unrolled
+[info]     - writing gmsh .msh file: .\share\examples\ex_box\box.msh
+[info]     - writing sg file: .\share\examples\ex_box\box.sg
+[info]       - writing nodes
+[info]       - writing elements
+[info]         -   writing connectivity
+[info]         -   writing local orientation
+[info]     - writing material id-name file: .\share\examples\ex_box\box.sg.mat
+[info]   - writing outputs -- done
+[info]   - running Gmsh for visualization
+[info]   - running: gmsh .\share\examples\ex_box\box.geo_unrolled .\share\examples\ex_box\box.msh .\share\examples\ex_box\box.opt
+[info]   - command launched successfully.
+[info]   - prevabs finished (2025-02-06 18:26:03)
+[info] total running time: 1.401 sec

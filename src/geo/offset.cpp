@@ -11,6 +11,8 @@
 #include "utilities.hpp"
 #include "plog.hpp"
 
+#include "homog2d.hpp"
+
 #include "gmsh_mod/SPoint2.h"
 #include "gmsh_mod/SPoint3.h"
 #include "gmsh_mod/STensor3.h"
@@ -23,6 +25,20 @@
 #include <vector>
 
 
+/**
+ * @brief Offsets a line segment by a given direction and distance.
+ *
+ * This function takes two points representing a line segment and offsets them
+ * by a specified direction vector and distance. The resulting offset points
+ * are stored in the provided output parameters.
+ *
+ * @param p1 The starting point of the line segment.
+ * @param p2 The ending point of the line segment.
+ * @param dr The direction vector for the offset. This vector will be normalized.
+ * @param ds The distance by which to offset the line segment.
+ * @param q1 The resulting starting point of the offset line segment.
+ * @param q2 The resulting ending point of the offset line segment.
+ */
 void offsetLineSegment(SPoint3 &p1, SPoint3 &p2, SVector3 &dr, double &ds,
                        SPoint3 &q1, SPoint3 &q2) {
   dr.normalize();
@@ -40,6 +56,18 @@ void offsetLineSegment(SPoint3 &p1, SPoint3 &p2, SVector3 &dr, double &ds,
 
 
 
+/**
+ * @brief Offsets a line segment by a given distance on a specified side.
+ *
+ * This function takes a line segment and offsets it by a specified distance
+ * on either the left or right side. The side is determined by the `side` parameter,
+ * where a positive value indicates the left side and a negative value indicates the right side.
+ *
+ * @param ls Pointer to the line segment to be offset.
+ * @param side Integer indicating the side to offset the line segment. Positive for left, negative for right.
+ * @param d The distance by which to offset the line segment.
+ * @return Pointer to the new offset line segment.
+ */
 PGeoLineSegment *offsetLineSegment(PGeoLineSegment *ls, int side, double d) {
   SVector3 t, n, p;
   n = SVector3(side, 0, 0);
@@ -65,6 +93,18 @@ PGeoLineSegment *offsetLineSegment(PGeoLineSegment *ls, int side, double d) {
 
 
 
+/**
+ * @brief Offsets a given line segment by a specified vector.
+ *
+ * This function creates a new line segment by offsetting the endpoints of the 
+ * input line segment by the given offset vector. The new line segment is 
+ * constructed using new vertices that are the result of adding the offset 
+ * vector to the original vertices of the input line segment.
+ *
+ * @param ls Pointer to the original line segment to be offset.
+ * @param offset Reference to the vector by which to offset the line segment.
+ * @return Pointer to the newly created offset line segment.
+ */
 PGeoLineSegment *offsetLineSegment(PGeoLineSegment *ls, SVector3 &offset) {
   PDCELVertex *v1, *v2;
   v1 = new PDCELVertex(ls->v1()->point() + offset.point());
@@ -83,6 +123,20 @@ PGeoLineSegment *offsetLineSegment(PGeoLineSegment *ls, SVector3 &offset) {
 
 
 
+/**
+ * @brief Offsets a given baseline curve by a specified distance on a specified side.
+ *
+ * This function takes a baseline curve and generates a new curve that is offset
+ * from the original by a given distance on the specified side. The offset is
+ * calculated by creating line segments between the vertices of the original curve,
+ * offsetting these segments, and then constructing the new curve from the offset
+ * segments.
+ *
+ * @param curve The original baseline curve to be offset.
+ * @param side The side on which to offset the curve (e.g., left or right).
+ * @param distance The distance by which to offset the curve.
+ * @return A pointer to the new offset baseline curve.
+ */
 Baseline *offsetCurve(Baseline *curve, int side, double distance) {
   // std::cout << "[debug] offsetCurve" << std::endl;
   Baseline *curve_off = new Baseline();
@@ -153,6 +207,20 @@ Baseline *offsetCurve(Baseline *curve, int side, double distance) {
 
 
 
+/**
+ * @brief Offsets a line segment defined by two vertices by a specified distance.
+ *
+ * This function calculates a new position for the vertices of a line segment
+ * by offsetting them perpendicular to the segment direction by a given distance.
+ *
+ * @param v1_base Pointer to the first vertex of the original line segment.
+ * @param v2_base Pointer to the second vertex of the original line segment.
+ * @param side Integer indicating the side of the offset (positive or negative).
+ * @param dist Distance by which to offset the line segment.
+ * @param v1_off Pointer to the first vertex of the offset line segment (output).
+ * @param v2_off Pointer to the second vertex of the offset line segment (output).
+ * @return Integer indicating the success of the operation (always returns 1).
+ */
 int offset(PDCELVertex *v1_base, PDCELVertex *v2_base, int side, double dist,
            PDCELVertex *v1_off, PDCELVertex *v2_off) {
   // std::cout << "[debug] offset a line segment:" << std::endl;
@@ -188,6 +256,22 @@ int offset(PDCELVertex *v1_base, PDCELVertex *v2_base, int side, double dist,
 
 
 
+/**
+ * @brief Offsets a given set of vertices by a specified distance.
+ *
+ * This function takes a set of base vertices and offsets them by a specified distance
+ * to create a new set of offset vertices. It handles both open and closed curves,
+ * and ensures that the resulting offset vertices maintain the correct orientation.
+ *
+ * @param base The input vector of base vertices to be offset.
+ * @param side The side on which to offset the vertices (e.g., left or right).
+ * @param dist The distance by which to offset the vertices.
+ * @param offset_vertices The output vector of offset vertices.
+ * @param link_to_2 The output vector linking base vertices to offset vertices.
+ * @param id_pairs The output vector of pairs of indices linking base vertices to offset vertices.
+ * @param pmessage Pointer to a Message object for logging and debugging.
+ * @return int Returns 1 on successful offsetting of vertices.
+ */
 int offset(const std::vector<PDCELVertex *> &base, int side, double dist,
            std::vector<PDCELVertex *> &offset_vertices, std::vector<int> &link_to_2,
            std::vector<std::vector<int>> &id_pairs, Message *pmessage) {
@@ -254,27 +338,65 @@ int offset(const std::vector<PDCELVertex *> &base, int side, double dist,
     }
     else {
       // Calculate intersection
-      double u1, u2;
-      bool not_parallel;
-      // std::cout << "        find intersection:" << std::endl;
-      // std::cout << "        v1_prev = " << v1_prev << ", v2_prev = " <<
-      // v2_prev << std::endl; std::cout << "        v1_tmp = " << v1_tmp << ",
-      // v2_tmp = " << v2_tmp << std::endl;
-      not_parallel =
-          calcLineIntersection2D(v1_prev, v2_prev, v1_tmp, v2_tmp, u1, u2, TOLERANCE);
-      // std::cout << "        not_parallel = " << not_parallel << ", u1 = " <<
-      // u1 << ", u2 = " << u2 << std::endl;
-      if (not_parallel) {
-        // vertices_tmp.push_back(ls->getParametricVertex(u1));
-        v_tmp = new PDCELVertex(
-            getParametricPoint(v1_prev->point(), v2_prev->point(), u1));
-        vertices_tmp.push_back(v_tmp);
+
+      std::cout << "        find intersection:" << std::endl;
+      std::cout << "        v1_prev = " << v1_prev << ", v2_prev = " << v2_prev << std::endl;
+      std::cout << "        v1_tmp = " << v1_tmp << ", v2_tmp = " << v2_tmp << std::endl;
+
+      // Old intersection method
+      // double u1, u2;
+      // bool not_parallel;
+      // not_parallel =
+      //     calcLineIntersection2D(v1_prev, v2_prev, v1_tmp, v2_tmp, u1, u2, TOLERANCE);
+      // // std::cout << "        not_parallel = " << not_parallel << ", u1 = " <<
+      // // u1 << ", u2 = " << u2 << std::endl;
+      // if (not_parallel) {
+      //   // vertices_tmp.push_back(ls->getParametricVertex(u1));
+      //   v_tmp = new PDCELVertex(
+      //       getParametricPoint(v1_prev->point(), v2_prev->point(), u1));
+      //   vertices_tmp.push_back(v_tmp);
+      // }
+      // else {
+      //   vertices_tmp.push_back(v2_prev);
+      // }
+      // Old intersection method (end)
+
+      // New intersection method (h2d)
+      h2d::Point2d _p1_prev(v1_prev->point2()[0], v1_prev->point2()[1]);
+      h2d::Point2d _p2_prev(v2_prev->point2()[0], v2_prev->point2()[1]);
+      h2d::Point2d _p1_tmp(v1_tmp->point2()[0], v1_tmp->point2()[1]);
+      h2d::Point2d _p2_tmp(v2_tmp->point2()[0], v2_tmp->point2()[1]);
+      std::cout << "Points: " << _p1_prev << " and " << _p2_prev << std::endl;
+      std::cout << "Points: " << _p1_tmp << " and " << _p2_tmp << std::endl;
+
+      h2d::Segment seg1(_p1_prev, _p2_prev);
+      h2d::Segment seg2(_p1_tmp, _p2_tmp);
+      std::cout << "Segments: " << seg1 << " and " << seg2 << std::endl;
+      auto res = seg1.intersects(seg2);
+      std::cout << "res = " << res() << std::endl;
+      if ( res() ) {
+        auto pts = res.get();
+        std::cout << "  intersection points: " << pts << std::endl;
+
+        // Check the distance between the intersection point and the segment ends
+        if (isClose(pts.getX(), pts.getY(), _p1_prev.getX(), _p1_prev.getY(), ABS_TOL, REL_TOL)) {
+          vertices_tmp.push_back(v1_prev);
+        }
+        else if (isClose(pts.getX(), pts.getY(), _p2_prev.getX(), _p2_prev.getY(), ABS_TOL, REL_TOL)) {
+          vertices_tmp.push_back(v2_prev);
+        }
+        else {
+          v_tmp = new PDCELVertex(0, pts.getX(), pts.getY());
+          vertices_tmp.push_back(v_tmp);
+        }
+
       }
       else {
         vertices_tmp.push_back(v2_prev);
       }
-      // std::cout << "        added vertex: " << vertices_tmp.back() <<
-      // std::endl;
+      // New intersection method (h2d) (end)
+
+      std::cout << "        added vertex: " << vertices_tmp.back() << std::endl;
     }
 
     if (i == size - 2) {

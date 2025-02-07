@@ -38,6 +38,13 @@ double dist(const P &p1, const P &p2) {
 
 
 
+bool isClose(
+  const double&, const double&,
+  const double&, const double&,
+  double, double);
+
+
+
 
 
 double calcPolylineLength(const std::vector<PDCELVertex *>);

@@ -24,6 +24,31 @@
 #include <algorithm>
 
 
+bool isClose(
+  const double& p1x, const double& p1y,
+  const double& p2x, const double& p2y,
+  double absTol, double relTol) {
+    auto isCloseValue = [absTol, relTol](double a, double b) -> bool {
+        double diff = std::abs(a - b);
+        double maxAbs = std::max(std::abs(a), std::abs(b));
+        return diff <= std::max(absTol, relTol * maxAbs);
+    };
+
+    return isCloseValue(p1x, p2x) && isCloseValue(p1y, p2y);
+}
+
+
+
+
+/**
+ * @brief Calculates the total length of a polyline.
+ * 
+ * This function computes the total length of a polyline represented by a vector of PDCELVertex pointers.
+ * It iterates through the vector and sums up the distances between consecutive vertices.
+ * 
+ * @param ps A vector of pointers to PDCELVertex objects representing the polyline.
+ * @return The total length of the polyline as a double.
+ */
 double calcPolylineLength(const std::vector<PDCELVertex *> ps) {
   double len = 0;
   for (auto i = 1; i < ps.size(); ++i) {
@@ -33,8 +58,22 @@ double calcPolylineLength(const std::vector<PDCELVertex *> ps) {
   return len;
 }
 
-// This function finds a point and its parametrized location on a baseline
-// based on its coordinate (x2 or x3) and the count for intersection
+
+/**
+ * @brief Finds a point on a polyline by a specified coordinate.
+ *
+ * This function searches through a polyline represented by a vector of PDCELVertex pointers
+ * and finds a point that matches the given coordinate within a specified tolerance.
+ *
+ * @param ps A vector of pointers to PDCELVertex representing the polyline.
+ * @param label A string label for the new point.
+ * @param loc The coordinate value to search for along the polyline.
+ * @param tol The tolerance within which the coordinate value should match.
+ * @param param A reference to a double that will be set to the parameter value of the found point.
+ * @param count The occurrence count of the coordinate value to find.
+ * @param by A string specifying whether to search by "x2" or "x3" coordinate.
+ * @return A pointer to the newly created PDCELVertex representing the found point.
+ */
 PDCELVertex *findPointOnPolylineByCoordinate(
   const std::vector<PDCELVertex *> &ps, const std::string label,
   const double loc,   double tol,double &param,
@@ -96,7 +135,20 @@ PDCELVertex *findPointOnPolylineByCoordinate(
   return pv;
 }
 
-// overloading in case you don't need parametrized location
+
+/**
+ * @brief Finds a point on a polyline by its coordinate.
+ * 
+ * This function searches for a point on a given polyline that matches the specified coordinate.
+ * 
+ * @param ps A vector of pointers to PDCELVertex objects representing the polyline.
+ * @param label A string label associated with the point.
+ * @param loc The coordinate location to search for.
+ * @param tol The tolerance value for the coordinate search.
+ * @param count An integer specifying the count of points to consider.
+ * @param by A string specifying the method or criteria to use for the search.
+ * @return A pointer to the PDCELVertex object that matches the specified coordinate.
+ */
 PDCELVertex *findPointOnPolylineByCoordinate(
   const std::vector<PDCELVertex *> &ps, const std::string label,
   const double loc,   double tol,
@@ -106,7 +158,21 @@ PDCELVertex *findPointOnPolylineByCoordinate(
   return findPointOnPolylineByCoordinate(ps, label, loc, tol, param, count, by); 
 }
 
-// overloading in case you don't need the point
+
+/**
+ * @brief Finds a point on a polyline by a given coordinate.
+ *
+ * This function searches for a point on a polyline defined by a vector of vertices
+ * based on a specified coordinate. It returns a parameter value corresponding to
+ * the location of the point on the polyline.
+ *
+ * @param ps A vector of pointers to PDCELVertex objects representing the polyline vertices.
+ * @param loc The coordinate value to search for on the polyline.
+ * @param tol The tolerance value for the search.
+ * @param count The number of points to consider in the search.
+ * @param by A string specifying the method or criteria for the search.
+ * @return The parameter value corresponding to the location of the point on the polyline.
+ */
 double findPointOnPolylineByCoordinate(
   const std::vector<PDCELVertex *> &ps,
   const double loc,   double tol,
@@ -125,6 +191,19 @@ double findPointOnPolylineByCoordinate(
 
 
 
+/**
+ * @brief Finds a parameter point on a polyline.
+ *
+ * This function calculates a point on a polyline based on a given parameter `u`.
+ * It also determines if the point is a new point or an existing vertex on the polyline.
+ *
+ * @param ps A vector of pointers to PDCELVertex representing the polyline vertices.
+ * @param u The parameter value (0 <= u <= 1) indicating the relative position on the polyline.
+ * @param is_new A reference to a boolean that will be set to true if the point is new, false otherwise.
+ * @param seg A reference to an integer that will be set to the segment index where the point is found or inserted.
+ * @param tol The tolerance value used for determining if the point is new.
+ * @return A pointer to the PDCELVertex representing the found or newly created point.
+ */
 PDCELVertex *findParamPointOnPolyline(
   const std::vector<PDCELVertex *> ps,
   const double &u, bool &is_new, int &seg, const double &tol
@@ -208,6 +287,17 @@ double calcDistanceSquared(PDCELVertex *v1, PDCELVertex *v2) {
 
 
 
+/**
+ * @brief Joins a list of Baseline curves into a single Baseline.
+ *
+ * This function takes a list of Baseline pointers and joins them into a single
+ * Baseline object. The first Baseline in the list is used as the starting point,
+ * and subsequent Baselines are joined based on the matching vertices.
+ *
+ * @param curves A list of Baseline pointers to be joined.
+ * @return A pointer to the newly created Baseline that is the result of joining
+ *         all the input Baselines.
+ */
 Baseline *joinCurves(std::list<Baseline *> curves) {
   // std::cout << "[debug] joining curves" << std::endl;
 
@@ -256,6 +346,18 @@ Baseline *joinCurves(std::list<Baseline *> curves) {
 
 
 
+/**
+ * @brief Joins multiple Baseline curves into a single Baseline.
+ *
+ * This function takes a Baseline object and a list of Baseline pointers,
+ * and joins the curves in the list into the provided Baseline object.
+ * The function modifies the provided Baseline object by adding vertices
+ * from the curves and joining them based on their vertex positions.
+ *
+ * @param line A pointer to the Baseline object that will be modified to include the joined curves.
+ * @param curves A list of pointers to Baseline objects that will be joined into the provided Baseline object.
+ * @return An integer indicating the success of the operation. Currently, always returns 0.
+ */
 int joinCurves(Baseline *line, std::list<Baseline *> curves) {
   // std::cout << "[debug] joining curves" << std::endl;
 
@@ -302,6 +404,17 @@ int joinCurves(Baseline *line, std::list<Baseline *> curves) {
 
 
 
+/**
+ * @brief Adjusts the end of a curve segment to ensure it intersects with another line segment.
+ *
+ * This function modifies the end of a baseline curve segment to ensure it intersects with a given line segment.
+ * It creates a new line segment from the baseline's vertices and tangent vectors, calculates the intersection
+ * point with the given line segment, and updates the baseline's vertices accordingly.
+ *
+ * @param bl Pointer to the Baseline object containing the curve segment to be adjusted.
+ * @param ls Pointer to the PGeoLineSegment object representing the line segment to intersect with.
+ * @param end Integer indicating which end of the baseline curve segment to adjust (0 for the beginning, 1 for the end).
+ */
 void adjustCurveEnd(Baseline *bl, PGeoLineSegment *ls, int end) {
   PGeoLineSegment *ls_end;
   if (end == 0) {
