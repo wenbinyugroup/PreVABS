@@ -1,5 +1,11 @@
 <!-- 
- Example: Box beam
+ Example: Box, circumferentially uniform scheme (CUS)
+ Ref:
+    Yu, Wenbin, Dewey H. Hodges, and Jimmy C. Ho.
+    “Variational Asymptotic Beam Sectional Analysis – An Updated Version.”
+    International Journal of Engineering Science 59 (October 2012): 40–64.
+    https://doi.org/10.1016/j.ijengsci.2012.03.006.
+
 
  Unit system:
  - Length: inch
@@ -9,7 +15,7 @@
  - Pressure: psi
 -->
 
-<cross_section name="box" format="1">
+<cross_section name="box_cus" format="1">
 
   <include></include>
 
@@ -79,7 +85,7 @@
 
     <layup name="layup_1">
       <!-- For each layer, assign fiber angle and number of plies (angle:nplies) -->
-      <layer lamina="la_mat_1">-15:6</layer>
+      <layer lamina="la_mat_1">15:6</layer>
     </layup>
 
   </layups>
