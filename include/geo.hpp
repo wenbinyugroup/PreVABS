@@ -316,3 +316,7 @@ PDCELVertex *getIntersectionVertex(
 );
 
 int trim(std::vector<PDCELVertex *> &c, PDCELVertex *v, const int &remove);
+
+std::vector<std::vector<int>> create_polyline_vertex_pairs(
+  const std::vector<PDCELVertex *> &,
+  const std::vector<PDCELVertex *> &);

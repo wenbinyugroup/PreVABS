@@ -16,6 +16,8 @@
 #include "gmsh_mod/STensor3.h"
 #include "gmsh_mod/SVector3.h"
 
+#include "homog2d.hpp"
+
 #include <cmath>
 #include <cstdlib>
 #include <list>
@@ -829,4 +831,49 @@ int trim(std::vector<PDCELVertex *> &c, PDCELVertex *v, const int &remove) {
 
 
 
+std::vector<std::vector<int>> create_polyline_vertex_pairs(
+  const std::vector<PDCELVertex *> &base_curve,
+  const std::vector<PDCELVertex *> &paired_curve) {
 
+    std::vector<std::vector<int>> pairs;
+    if (base_curve.empty() || paired_curve.empty()) return pairs;
+
+    // Start from the beginning of the paired_curve
+    int last_paired_index = 0;
+    
+    // Iterate over each point on the base curve
+    for (size_t i = 0; i < base_curve.size(); ++i) {
+        int best_index = last_paired_index;
+
+        h2d::Point2d base_point(base_curve[i]->y(), base_curve[i]->z());
+        h2d::Point2d paired_point(
+          paired_curve[last_paired_index]->y(), paired_curve[last_paired_index]->z());
+
+        // double best_dist = squaredDistance(base_curve[i], paired_curve[last_paired_index]);
+        double best_dist = h2d::dist(base_point, paired_point);
+        double prev_dist = best_dist;
+        
+        // Iterate over the paired_curve starting from the last paired index + 1
+        for (size_t j = last_paired_index + 1; j < paired_curve.size(); ++j) {
+            h2d::Point2d curr_paired_point(paired_curve[j]->y(), paired_curve[j]->z());
+            // double curr_dist = squaredDistance(base_curve[i], paired_curve[j]);
+            double curr_dist = h2d::dist(base_point, curr_paired_point);
+            // If the current point is closer, update the best_index and distance.
+            if (curr_dist < prev_dist) {
+                best_index = static_cast<int>(j);
+                best_dist = curr_dist;
+                prev_dist = curr_dist;
+            } else {
+                // If the current distance is larger than the previous one, stop the search.
+                break;
+            }
+        }
+        
+        // Update last_paired_index for the next iteration over base_curve.
+        last_paired_index = best_index;
+        pairs.push_back({static_cast<int>(i), best_index});
+    }
+    
+    return pairs;
+
+  }
