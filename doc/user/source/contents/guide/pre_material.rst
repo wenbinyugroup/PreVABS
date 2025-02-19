@@ -18,7 +18,6 @@ More details can be found below.
 
   Relationship between material, lamina, layer and layup.
 
-.. contents::
 
 
 

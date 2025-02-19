@@ -23,6 +23,7 @@
 #include <list>
 #include <string>
 #include <vector>
+#include <sstream>
 
 
 /**
@@ -275,6 +276,11 @@ int offset(PDCELVertex *v1_base, PDCELVertex *v2_base, int side, double dist,
 int offset(const std::vector<PDCELVertex *> &base, int side, double dist,
            std::vector<PDCELVertex *> &offset_vertices, std::vector<int> &link_to_2,
            std::vector<std::vector<int>> &id_pairs, Message *pmessage) {
+  pmessage->increaseIndent();
+
+  std::stringstream ss;
+
+  PLOG(debug) << pmessage->message("offsetting a polyline");
   // std::cout << "\n[debug] offset" << std::endl;
 
   std::size_t size = base.size();
@@ -283,7 +289,10 @@ int offset(const std::vector<PDCELVertex *> &base, int side, double dist,
   // PGeoLineSegment *ls, *ls_prev, *ls_first;
   std::vector<int> link_to_tmp;
 
+  // The base curve has only two vertices
   if (size == 2) {
+    PLOG(debug) << pmessage->message("the base curve has only two vertices");
+
     // ls = new PGeoLineSegment(curve->vertices()[0], curve->vertices()[1]);
     v1_tmp = new PDCELVertex();
     v2_tmp = new PDCELVertex();
@@ -315,7 +324,7 @@ int offset(const std::vector<PDCELVertex *> &base, int side, double dist,
   //
   // Step 1: Offset each line segment, and
   // calculate intersections between every two neighbors
-  // std::cout << "\n[debug] offset: step 1" << std::endl;
+  PLOG(debug) << pmessage->message("1. offset each line segment");
 
   // PGeoLineSegment *ls_prev, *ls_first;
   for (int i = 0; i < size - 1; ++i) {
@@ -339,9 +348,15 @@ int offset(const std::vector<PDCELVertex *> &base, int side, double dist,
     else {
       // Calculate intersection
 
-      std::cout << "        find intersection:" << std::endl;
-      std::cout << "        v1_prev = " << v1_prev << ", v2_prev = " << v2_prev << std::endl;
-      std::cout << "        v1_tmp = " << v1_tmp << ", v2_tmp = " << v2_tmp << std::endl;
+      // std::cout << "        find intersection:" << std::endl;
+      // std::cout << "        v1_prev = " << v1_prev << ", v2_prev = " << v2_prev << std::endl;
+      // std::cout << "        v1_tmp = " << v1_tmp << ", v2_tmp = " << v2_tmp << std::endl;
+
+      PLOG(debug) << pmessage->message("calculate intersection");
+      PLOG(debug) << pmessage->message(
+        "v1_prev: " + v1_prev->printString() + ", v2_prev: " + v2_prev->printString());
+      PLOG(debug) << pmessage->message(
+        "v1_tmp: " + v1_tmp->printString() + ", v2_tmp: " + v2_tmp->printString());
 
       // Old intersection method
       // double u1, u2;
@@ -366,17 +381,33 @@ int offset(const std::vector<PDCELVertex *> &base, int side, double dist,
       h2d::Point2d _p2_prev(v2_prev->point2()[0], v2_prev->point2()[1]);
       h2d::Point2d _p1_tmp(v1_tmp->point2()[0], v1_tmp->point2()[1]);
       h2d::Point2d _p2_tmp(v2_tmp->point2()[0], v2_tmp->point2()[1]);
-      std::cout << "Points: " << _p1_prev << " and " << _p2_prev << std::endl;
-      std::cout << "Points: " << _p1_tmp << " and " << _p2_tmp << std::endl;
+
+      ss.str("");
+      ss << "Points: " << _p1_prev << " and " << _p2_prev << std::endl;
+      PLOG(debug) << pmessage->message(ss.str());
+      ss.str("");
+      ss << "Points: " << _p1_tmp << " and " << _p2_tmp << std::endl;
+      PLOG(debug) << pmessage->message(ss.str());
 
       h2d::Segment seg1(_p1_prev, _p2_prev);
       h2d::Segment seg2(_p1_tmp, _p2_tmp);
-      std::cout << "Segments: " << seg1 << " and " << seg2 << std::endl;
+
+      ss.str("");
+      ss << "Segments: " << seg1 << " and " << seg2 << std::endl;
+      PLOG(debug) << pmessage->message(ss.str());
+
       auto res = seg1.intersects(seg2);
-      std::cout << "res = " << res() << std::endl;
+
+      ss.str("");
+      ss << "res = " << res() << std::endl;
+      PLOG(debug) << pmessage->message(ss.str());
+
       if ( res() ) {
         auto pts = res.get();
-        std::cout << "  intersection points: " << pts << std::endl;
+
+        ss.str("");
+        ss << "  intersection points: " << pts << std::endl;
+        PLOG(debug) << pmessage->message(ss.str());
 
         // Check the distance between the intersection point and the segment ends
         if (isClose(pts.getX(), pts.getY(), _p1_prev.getX(), _p1_prev.getY(), ABS_TOL, REL_TOL)) {
@@ -396,7 +427,10 @@ int offset(const std::vector<PDCELVertex *> &base, int side, double dist,
       }
       // New intersection method (h2d) (end)
 
-      std::cout << "        added vertex: " << vertices_tmp.back() << std::endl;
+      ss.str("");
+      ss << "        added vertex: " << vertices_tmp.back() << std::endl;
+      PLOG(debug) << pmessage->message(ss.str());
+
     }
 
     if (i == size - 2) {
@@ -440,7 +474,8 @@ int offset(const std::vector<PDCELVertex *> &base, int side, double dist,
 
   //
   // Step 2: Check degenerated cases (zero length and inversed line segments)
-  // std::cout << "\n[debug] offset: step 2" << std::endl;
+  PLOG(debug) << pmessage->message("2. check degenerated cases");
+
   SVector3 vec_base, vec_off;
 
   // Eliminate reversed direction line segments
@@ -501,7 +536,7 @@ int offset(const std::vector<PDCELVertex *> &base, int side, double dist,
 
   //
   // Step 3: Find intersections between neighboring sub-lines for more than 2 lines
-  // std::cout << "\n[debug] offset: step 3" << std::endl;
+  PLOG(debug) << pmessage->message("3. find intersections between neighboring sub-lines");
   //
   // Here use a brute force method
   // Since the intersection should be found in a local region
@@ -740,7 +775,8 @@ int offset(const std::vector<PDCELVertex *> &base, int side, double dist,
 
 
   // Step 4: Join all sub-lines
-  // std::cout << "\n[debug] offset: step 4" << std::endl;
+  PLOG(debug) << pmessage->message("4. join all sub-lines");
+
   // std::vector<PDCELVertex *> tmp_offset_vertices;
   // std::vector<int> tmp_offset_link_to_base_indices;
   std::vector<int> tmp_base_link_to_offset_indices(base.size(), 0);
@@ -789,13 +825,17 @@ int offset(const std::vector<PDCELVertex *> &base, int side, double dist,
   // std::cout << "\n[debug] base vertices -- base_link_to_offset_indices\n";
   PLOG(debug) << pmessage->message("base vertices -- base_link_to_offset_indices");
   for (auto i = 0; i < id_pairs.size(); i++) {
-    // std::cout << "        " << i << ": " << base[i]
+
+    // ss.str("");
+    // ss << "        " << i << ": " << base[i]
     // << " -- " << link_to_2[i] << std::endl;
     PLOG(debug) << pmessage->message(
       "  " + std::to_string(id_pairs[i][0]) + ": " + base[id_pairs[i][0]]->printString()
       + " -- " + std::to_string(id_pairs[i][1])
     );
   }
+
+  pmessage->decreaseIndent();
 
   return 1;
 }

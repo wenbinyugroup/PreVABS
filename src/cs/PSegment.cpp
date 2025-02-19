@@ -332,6 +332,35 @@ void Segment::offsetCurveBase(Message *pmessage) {
 
 
 
+void Segment::updateBaseOffsetIndexPairs(Message *pmessage) {
+  pmessage->increaseIndent();
+
+  PLOG(info) << pmessage->message("updating base-offset index pairs");
+
+  // Clear the existing pairs
+  _base_offset_indices_pairs.clear();
+
+  // Create new pairs
+  _base_offset_indices_pairs = create_polyline_vertex_pairs(
+    _curve_base->vertices(), _curve_offset->vertices());
+
+  // Log the updated pairs
+  PLOG(debug) << pmessage->message("updated base-offset index pairs:");
+  for (const auto &pair : _base_offset_indices_pairs) {
+    PLOG(debug) << pmessage->message(std::to_string(pair[0]) + " -- " + std::to_string(pair[1]));
+  }
+
+  pmessage->decreaseIndent();
+}
+
+
+
+
+
+
+
+
+
 
 
 

@@ -9,52 +9,59 @@ PreVABS Documentation
 PreVABS is a preprocessing tool for VABS and SwiftComp.
 It helps users to create cross-sections and write input files.
 
-.. .. toctree::
-..   :maxdepth: 2
-..   :caption: Table of Contents
-
-..   contents/install
-..   contents/run
-..   contents/tutorial
-..   contents/guide
-..   contents/examples
-..   contents/changelog
-..   contents/xml
-..   contents/references
 
 
-Manual
---------------------
+
+..  only:: latex
+
+    ..  toctree::
+        :maxdepth: 2
+        :caption: Table of Contents
+
+        /contents/start/index
+        /contents/guide/index
+        /contents/tutorial
+        /contents/examples/index
+        /contents/ref/index
 
 
-..  grid:: 2
-    :gutter: 4
+..  only:: html
 
-    ..  grid-item-card::
+    Manual
+    --------------------
 
-        ..  toctree::
-            :maxdepth: 2
 
-            /contents/start/index
+    ..  grid:: 2
+        :gutter: 4
 
-    ..  grid-item-card::
+        ..  grid-item-card::
 
-        ..  toctree::
-            :maxdepth: 2
+            ..  toctree::
+                :maxdepth: 2
 
-            /contents/guide/index
+                /contents/start/index
 
-    ..  grid-item-card::
+        ..  grid-item-card::
 
-        ..  toctree::
-            :maxdepth: 2
+            ..  toctree::
+                :maxdepth: 2
 
-            /contents/tutorial
-            /contents/examples/index
+                /contents/guide/index
 
-    ..  grid-item-card::
+        ..  grid-item-card::
 
-        ..  toctree::
-            :maxdepth: 2
+            ..  toctree::
+                :maxdepth: 2
 
-            /contents/ref/index
+                /contents/tutorial
+                /contents/examples/index
+
+        ..  grid-item-card::
+
+            ..  toctree::
+                :maxdepth: 2
+
+                /contents/ref/index
+
+
+

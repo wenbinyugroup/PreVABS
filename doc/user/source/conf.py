@@ -151,7 +151,7 @@ latex_elements = {
 
     # The font size ('10pt', '11pt' or '12pt').
     #
-    # 'pointsize': '10pt',
+    'pointsize': '10pt',
 
     # Additional stuff for the LaTeX preamble.
     #
@@ -159,7 +159,7 @@ latex_elements = {
 
     # Latex figure (float) alignment
     #
-    # 'figure_align': 'htbp',
+    'figure_align': 'htbp',
 
     'releasename': 'Version'
 }
@@ -168,9 +168,11 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'PreVABSManual.tex', u"PreVABS User's Manual",
+    (master_doc, 'prevabs_doc.tex', u"PreVABS User's Manual",
      author, 'manual'),
 ]
+
+latex_show_pagerefs = True
 
 
 # -- Options for manual page output ---------------------------------------

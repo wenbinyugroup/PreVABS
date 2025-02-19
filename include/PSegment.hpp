@@ -149,7 +149,10 @@ public:
   std::vector<int> &nextBoundIndices() { return _next_bound_indices; }
   std::vector<int> &offsetVerticesLinkToList() { return _offset_vertices_link_to; }
   std::vector<int> &baseOffsetIndicesLink() { return _offset_indices_base_link_to; }
-  std::vector<std::vector<int>> &baseOffsetIndicesPairs() { return _base_offset_indices_pairs; }
+  std::vector<std::vector<int>> &baseOffsetIndicesPairs() {
+    std::cout << "[debug] returning base offset indices pairs" << std::endl;
+    return _base_offset_indices_pairs;
+  }
 
   PDCELFace *face() { return _face; }
 
@@ -192,6 +195,8 @@ public:
   void setPDCELFace(PDCELFace *face) { _face = face; }
 
   void offsetCurveBase(Message *);
+
+  void updateBaseOffsetIndexPairs(Message *);
 
   void build(Message *);
   void buildAreas(Message *);

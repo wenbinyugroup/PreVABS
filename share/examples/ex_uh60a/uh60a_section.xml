@@ -111,8 +111,6 @@
     <layup name="layup_tail">
       <layer lamina="la_e_glass_0.00025">0</layer>
       <layer lamina="la_e_glass_0.00025">45</layer>
-      <!-- <layer lamina="la_e_glass_0.00025">-45</layer>
-      <layer lamina="la_e_glass_0.00025">0</layer> -->
     </layup>
   </layups>
 

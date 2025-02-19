@@ -126,6 +126,8 @@ void PComponent::buildDetails(Message *pmessage) {
 
     for (auto sgm : _segments) {
 
+      sgm->updateBaseOffsetIndexPairs(pmessage);
+
       sgm->buildAreas(pmessage);
 
       if (config.debug) _pmodel->plotGeoDebug(pmessage);

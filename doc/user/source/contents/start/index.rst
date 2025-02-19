@@ -1,3 +1,5 @@
+.. _section-start:
+
 Getting Started
 ===============
 

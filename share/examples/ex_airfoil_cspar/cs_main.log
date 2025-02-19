@@ -1,4 +1,4 @@
-[info] - prevabs start (2024-11-17 18:42:10)
+[info] - prevabs start (2025-02-18 19:33:25)
 [info] - reading input files
 [info]     - reading main input file: .\share\examples\ex_airfoil_cspar\c  
   
@@ -16,7 +16,7 @@
   
   ========================================
   
-foxta\work\dev\prevabs\build_msvc\Release\MaterialDB.xml
+tian50\work\dev\prevabs\build_msvc\Release\MaterialDB.xml
 [info]         - reading materials file: .\share\examples\ex_airfoil_cspar\material_database_us_ft.xml
 [info]   - reading input files -- done
 [info]   - building the shape
@@ -25,6 +25,16 @@ foxta\work\dev\prevabs\build_msvc\Release\MaterialDB.xml
 [info]       - building component: fill_aft
 [info]     - building the cross section, step 2
 [info]       - building component details: spar
+[info]         - updating base-offset index pairs
+[info]         - updating base-offset index pairs
+[info]         - updating base-offset index pairs
+[info]         - updating base-offset index pairs
+[info]         - updating base-offset index pairs
+[info]         - updating base-offset index pairs
+[info]         - updating base-offset index pairs
+[info]         - updating base-offset index pairs
+[info]         - updating base-offset index pairs
+[info]         - updating base-offset index pairs
 [info]     - fixing geometry
 [info]   - building the shape -- done
 [info]   - modeling in Gmsh
@@ -47,6 +57,6 @@ foxta\work\dev\prevabs\build_msvc\Release\MaterialDB.xml
 [info]   - writing outputs -- done
 [info]   - running Gmsh for visualization
 [info]   - running: gmsh .\share\examples\ex_airfoil_cspar\cs_main.geo_unrolled .\share\examples\ex_airfoil_cspar\cs_main.msh .\share\examples\ex_airfoil_cspar\cs_main.opt
-[info]   - gmsh launched successfully.
-[info]   - prevabs finished (2024-11-17 18:42:56)
-[info] total running time: 46.182 sec
+[info]   - command launched successfully.
+[info]   - prevabs finished (2025-02-18 19:35:17)
+[info] total running time: 112.4 sec
